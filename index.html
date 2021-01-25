@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="index.css">
+
+
+
+
+
+            <div id="tableStuff">
+              <table>
+                <tr>
+                  <th>Note</th>
+                  <th>Keypress</th>
+
+                </tr> <td> C </td> <td> <span id="1"> </td>  <tr>
+                </tr> <td> C# / Db </td> <td> <span id="2"> </td>  <tr>
+                </tr> <td> D </td> <td> <span id="3"> </td>  <tr>
+                </tr> <td> D# / Eb </td> <td> <span id="4"> </td>  <tr>
+                </tr> <td> E </td> <td> <span id="5"> </td>  <tr>
+                </tr> <td> F </td> <td> <span id="6"> </td>  <tr>
+                </tr> <td> F# / Gb </td> <td> <span id="7"> </td>  <tr>
+                </tr> <td> G </td> <td> <span id="8"> </td>  <tr>
+                </tr> <td> G# / Ab </td> <td> <span id="9"> </td>  <tr>
+                </tr> <td> A </td> <td> <span id="10"> </td>  <tr>
+                </tr> <td> A# / Bb </td> <td> <span id="11"> </td>  <tr>
+                </tr> <td> B </td> <td> <span id="12"> </td>  <tr>
+
+                </tr>
+              </table>
+            </div>
+
+
+            <div id="keyPressDisplay">
+                <p>Simulated Key Press:</p>
+                <h1 id="keyDown"></h1>
+
+            </div>
+
+            <div id="noteStuff">
+                <p>Note Playing:</p>
+                <h1 id="note-name"></h1>
+                <p>
+                  <span>frequency (Hz):</span>
+                  <span id="frequency"></span>
+                </p>
+                <br>
+            </div>
+
+            <div id="sliderMic">
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="100" value="30" class="sliderSense" id="sensitivity"> <br> Mic Sensitivity: <span id="valueBro" value="30"></span> </input>
+                </div>
+                <button id="default" onclick="defaultReset()" >Default Sensitivity</button>
+            </div>
+            
+
+            <div id="micDropdown">
+                <p>Switch Mic: <br></p>
+                <select id = "micSelect" > </select>
+           </div>
+
+
+
+
+            <div id="startStopButton">
+              <label class="switch">
+                <input type="checkbox" id="onOff" onclick="start()">
+                <span class="slider round"></span>
+              </label>
+
+              <br>
+
+              <h2> Start/ Stop <br> Simulating Key Presses<h2>
+            </div>
+
+
+
+            <div id="fileChoose">
+              <p>Choose A Config File:</p>
+                     <br>
+         <input type="file" name="inputfile"
+                id="inputfile">
+            </div>
+
+
+
+
+
+  </head>
+
+
+
+
+  <body>
+
+
+
+
+    <canvas id="myCanvas" ></canvas>
+
+     <script src="tuney.js"></script>
+
+      <script>
+      //   <a href="https://github.com/jbergknoff/guitar-tuner">Source code</a> / <a href="http://jonathan.bergknoff.com/journal/making-a-guitar-tuner-html5">Explanatory article</a>
+
+
+
+
+      //============Close Buttons Listeners (Main Process actually exectues)================
+/*
+          document.getElementById("min-btn").addEventListener("click", function (e) {
+               ipcRenderer.send('window-message', 'min');
+          });
+
+          document.getElementById("max-btn").addEventListener("click", function (e) {
+               ipcRenderer.send('window-message', 'max');
+          });
+
+          document.getElementById("close-btn").addEventListener("click", function (e) {
+               ipcRenderer.send('window-message', 'close');
+          });
+
+*/
+
+
+
+
+
+
+        //set the sensitivity textContent
+        document.getElementById("valueBro").textContent = confidence_threshold;
+        //Sets Default KeyPressDisplay to blank
+        document.getElementById("keyDown").textContent = "--";
+
+        document.body.scrollTop = 0; // <-- pull the page to the top
+        document.body.style.overflow = 'hidden'; // <-- To hide scrollbar
+
+        const { ipcRenderer } = require('electron');
+
+        //mic sensitivity reset button
+        function defaultReset(){
+          document.getElementById("sensitivity").value = "30";
+          confidence_threshold = 30;
+          document.getElementById("valueBro").textContent = confidence_threshold;
+        }
+
+      //==========Mic Select Menu Functionality===========
+      //const audioInputSelect = document.querySelector('select#micSelect');
+      const audioInputSelect = document.getElementById("micSelect");
+      navigator.getUserMedia.call(navigator, { "audio": true }, use_stream, function() {});
+      var selectors = [audioInputSelect];
+
+      //gets list of devices plugged in
+      navigator.mediaDevices.enumerateDevices()
+      .then(gotDevices)
+      .then(switchMic);
+    //  .catch(handleError);
+
+      //gets triggered when user clicks dropdown menu (in case they plugged a new mic in while program was running)
+      function lookForNewMic(){
+      navigator.mediaDevices.enumerateDevices()
+      .then(gotDevices)
+      .then(switchMic)
+      .catch(handleError);
+      //var selectors = [audioInputSelect];
+      console.log("new pic");
+      }
+
+
+
+
+      function gotDevices(deviceInfos) {
+        // Handles being called several times to update labels. Preserve values.
+        const values = selectors.map(select => select.value);
+        selectors.forEach(select => {
+          while (select.firstChild) {
+            select.removeChild(select.firstChild);
+          }
+        });
+        for (let i = 0; i !== deviceInfos.length; ++i) {
+          const deviceInfo = deviceInfos[i];
+          const option = document.createElement('option');
+          option.value = deviceInfo.deviceId;
+            if (deviceInfo.kind === 'audioinput') {
+              option.text = deviceInfo.label || `microphone ${audioInputSelect.length + 1}`;
+              audioInputSelect.appendChild(option);
+            }
+        }
+        selectors.forEach((select, selectorIndex) => {
+          if (Array.prototype.slice.call(select.childNodes).some(n => n.value === values[selectorIndex])) {
+            select.value = values[selectorIndex];
+          }
+        });
+      }
+
+
+
+      function switchMic() {
+    	// Second call to getUserMedia() with changed device may cause error, so we need to release stream before changing device
+      if (window.stream) {
+      	stream.getAudioTracks()[0].stop();
+        console.log("yup");
+      }
+
+      const audioSource = audioInputSelect.value;
+
+      const constraints = {
+        audio: {deviceId: audioSource ? {exact: audioSource} : undefined}
+      };
+      console.log(constraints);
+
+//(navigator, { "audio": true }, use_stream, function() {}).catch(handleError);
+      navigator.mediaDevices.getUserMedia(constraints).then(use_stream).catch(handleError);
+      }
+
+
+
+      function handleError(error) {
+        console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
+      }
+
+
+      audioInputSelect.onchange = switchMic;
+
+
+
+
+
+      //==================default binds can be changed by user file input==============
+      var configArray = {C: "w", Cs: "space", D: "a", Ds: "t", E: "s", F: "d", Fs: "backspace", G: "1", Gs: "2", A: "3", As: "4", B: "5"};
+
+      document.getElementById("1").textContent = configArray["C"];
+      document.getElementById("2").textContent = configArray["Cs"];
+      document.getElementById("3").textContent = configArray["D"];
+      document.getElementById("4").textContent = configArray["Ds"];
+      document.getElementById("5").textContent = configArray["E"];
+      document.getElementById("6").textContent = configArray["F"];
+      document.getElementById("7").textContent = configArray["Fs"];
+      document.getElementById("8").textContent = configArray["G"];
+      document.getElementById("9").textContent = configArray["Gs"];
+      document.getElementById("10").textContent = configArray["A"];
+      document.getElementById("11").textContent = configArray["As"];
+      document.getElementById("12").textContent = configArray["B"];
+
+
+      //===========Read A User Conig File================
+      document.getElementById('inputfile')
+          .addEventListener('change', function() {
+
+          var fr=new FileReader();
+          fr.onload=function(){
+
+
+
+              configArray = JSON.parse(fr.result);
+
+              //Update Table
+              document.getElementById("1").textContent = configArray["C"];
+              document.getElementById("2").textContent = configArray["Cs"];
+              document.getElementById("3").textContent = configArray["D"];
+              document.getElementById("4").textContent = configArray["Ds"];
+              document.getElementById("5").textContent = configArray["E"];
+              document.getElementById("6").textContent = configArray["F"];
+              document.getElementById("7").textContent = configArray["Fs"];
+              document.getElementById("8").textContent = configArray["G"];
+              document.getElementById("9").textContent = configArray["Gs"];
+              document.getElementById("10").textContent = configArray["A"];
+              document.getElementById("11").textContent = configArray["As"];
+              document.getElementById("12").textContent = configArray["B"];
+
+              //console.log(configArray);
+              //console.log(configArray["C"]);
+
+          }
+
+          fr.readAsText(this.files[0]);
+      });
+
+
+  var keySimOn = false;
+
+function start(){
+  var checkBox = document.getElementById("onOff");
+
+    if(checkBox.checked == true){
+      keySimOn = true;
+      //loopy = setInterval(update, pressSpeed);
+      //console.log("on");
+    }else{
+      keySimOn = false;
+      //clearInterval(loopy);
+    //  console.log("off");
+    }
+}
+
+
+    </script>
+  </body>
+</html>

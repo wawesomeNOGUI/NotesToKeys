@@ -1,0 +1,180 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: white;
+  text-align: center;
+}
+
+
+
+p {
+  margin-top: 12%;
+  padding: 0px;
+}
+
+h1 {
+  margin: 2px;
+  padding: 0px;
+}
+
+table {
+
+margin-top: 20px;
+margin-bottom: 0px;
+padding: 0px;
+border: 5px solid black;
+}
+
+ th {
+ padding: 0px;
+ margin: 0px;
+ border-bottom: 5px solid black;
+ color: red;
+
+}
+
+ td {
+   color: aquamarine;
+   border-right: 2px solid black;
+
+}
+
+#tableStuff{
+  float: left;
+  margin: 2%;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+}
+
+#noteStuff {
+            float:left;
+            margin-left: 2%;
+            margin-top: 1%;
+            background: green;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            /*
+            width:180px;
+            height:160px;
+            background-color:white;
+            border:solid black;
+            */
+        }
+
+#sliderMic {
+    margin-top: 5%;
+    margin-right: 12%;
+    margin-left: 0px;
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+#keyPressDisplay {
+  float: right;
+  margin-right: 15%;
+  margin-left: 2%;
+  margin-top: 1%;
+  margin-bottom: 0px;
+  padding:0px;
+  background: coral;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+}
+
+#fileChoose {
+  text-align: justify;
+  float: left;
+  padding-top: 5%;
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-left: 0px;
+  margin-right: 15px;
+}
+
+#micDropdown {
+  float: left;
+  text-align: center;
+  margin: 0px;
+  padding: 0px;
+
+}
+
+#micDropdown option{
+  width: 15px;
+}
+
+#startStopButton {
+  color: green;
+  float: right;
+/*  align-self: center; */
+  margin-top: 5%;
+  padding-top: 0px;
+  padding-bottom: 100px;
+  padding-left: 0px;
+  margin-right: 5%;
+
+}
+
+
+
+
+
+
+
+
+/*====Start Stop Button Style====*/
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
