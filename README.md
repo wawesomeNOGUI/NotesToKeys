@@ -7,7 +7,7 @@ This program can be used for:
 - Typing with your instrument or voice
 - Any other fun idea you might have!
 
-Thanks for checking this out! 
+Thanks for checking NotesToKeys out! 
 Have fun!
 
 # Download
